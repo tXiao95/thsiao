@@ -48,7 +48,7 @@ cauchy_matrix <- function(x,y=NULL){
 #' @name spdiags
 #' @title Create sparse diagonal matrix
 #'
-#' @description Creates a sparse representation of multipel diagonal matrix
+#' @description Creates a sparse representation of multiple diagonal matrix
 #'
 #' @param A - matrix where columns correspond to the desired diagonals
 #' @param d - indices of the diagonals to be filled in. 0 is main diagonal. -1
@@ -60,45 +60,47 @@ cauchy_matrix <- function(x,y=NULL){
 #'
 #' @export
 spdiags <- function(A, d, m, n){
-  rows <- unlist(sapply(d, function(d){
-    if(d == 0){
+  num_diags <- length(d)
+  A_vec <- rows <- cols <- vector(mode = "list", length = num_diags)
+
+  for(k in 1:num_diags){
+    d_k <- d[k]
+    if(d_k == 0){
       i <- 1:m
-    } else if(d > 0){
-      i <- 1:(m-d)
-    } else if(d < 0){
-      i <- (1-d):m
-    }
-    i
-  }))
-
-  cols <- unlist(sapply(d, function(d){
-    if(d == 0){
       j <- 1:n
-    } else if(d > 0){
-      j <- (1+d):n
-    } else if(d < 0){
-      j <- 1:(n+d)
+    } else if(d_k > 0){
+      i <- 1:(m-d_k)
+      j <- (1+d_k):n
+    } else if(d_k < 0){
+      i <- (1-d_k):m
+      j <- 1:(n+d_k)
     }
-    j
-  }))
+    rows[[k]] <- i
+    cols[[k]] <- j
+    A_vec[[k]] <- A[j,k]
+  }
 
-  B <- Matrix::sparseMatrix(i=rows, j=cols, x = as.vector(A),dims = c(m,n))
-  B
+  rows  <- unlist(rows)
+  cols  <- unlist(cols)
+  A_vec <- unlist(A_vec)
+  B <- Matrix::sparseMatrix(i=rows, j=cols, x = A_vec,dims = c(m,n))
+  return(B)
 }
 
-#' @description Create a sparse tridiagonal matrix
+#' @name tridiag
+#' @title Create a sparse tridiagonal matrix
+#'
+#' @description Create a sparse tridiagonal matrix of dgcMatrix class.
 #'
 #' @param n - dimension of the square matrix
-#' @param x - subdiagonal
-#' @param y - diagonal
-#' @param z - superdiagonal
+#' @param x - subdiagonal (-1)
+#' @param y - diagonal (0)
+#' @param z - superdiagonal (+1)
 #'
 #' @return Sparse tridiagonal matrix
 tridiag <- function(n, x=NULL, y=NULL, z=NULL){
-
-
   if(is.null(x)){
-    x <- -1; y <- 2; z <- 1
+    x <- -1; y <- 2; z <- -1
   }
   if(is.null(z)){
     z <- y; y <- x; x <- n
@@ -117,7 +119,5 @@ tridiag <- function(n, x=NULL, y=NULL, z=NULL){
     }
   }
   n <- length(y)
-  # Create sparse representation of tridiagonal. Below is MATLAB notation
-  # T = spdiags([ [x;0] y [0;z] ], -1:1, n, n)
   spdiags(matrix(c(x,0, y, 0,z),nrow=n), -1:1, n, n)
 }
