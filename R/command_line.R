@@ -1,29 +1,3 @@
-#' @importFrom utils readClipboard
-#'
-#' @name winPath
-#' @title Change Windows filepaths to R format
-#'
-#' @description Convert Windows backslash filepaths to forward slashes to
-#' be compatible with R
-#'
-#' @param path Filepath with \\ slashes that needs to be formatted. If left blank, will pull from the clipboard.
-#'
-#' @return Filepath with forward slashes
-#'
-#' @examples
-#' # If Windows path on my clipboard
-#' winPath()
-#' # Input path
-#' winPath("C:\\Users\\user")
-#'
-#' @export
-winPath <- function(path="clipboard"){
-  if(path=="clipboard" & Sys.info()["sysname"] == "Windows"){
-    path <- readClipboard()
-  }
-  return(chartr("\\", "/", path))
-}
-
 #' @name setwd_jump
 #' @title setwd_jump
 #'
