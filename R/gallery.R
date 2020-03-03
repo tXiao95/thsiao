@@ -1,5 +1,5 @@
-#' @import pracma
-#' @import Matrix
+#' @importFrom pracma pascal
+#' @importFrom Matrix sparseMatrix norm
 
 #' @name binomial_matrix
 #' @title Create binomial matrix
@@ -12,7 +12,7 @@
 #'
 #' @export
 binomial_matrix <- function(n){
-  L <- abs(pracma::pascal(n,1))
+  L <- abs(pascal(n, 1))
   U <- L[n:1,n:1]
   D <- diag((-2)^(0:(n-1)))
   L %*% D %*% U
@@ -21,7 +21,7 @@ binomial_matrix <- function(n){
 #' @name cauchy_matrix
 #' @title Create cauchy matrix
 #'
-#' @description
+#' @description Arguments \code{x} and \code{y} are vectors of length \code{n}. \code{C[i,j] = 1 / (x[i] + y[j])}
 #'
 #' @param x vector of length n
 #' @param y vector of length n
@@ -29,7 +29,7 @@ binomial_matrix <- function(n){
 #' @export
 cauchy_matrix <- function(x,y=NULL){
   n <- length(x)
-  if(n==1){
+  if(n == 1){
     n <- x
     x <- 1:n
   }
@@ -42,7 +42,7 @@ cauchy_matrix <- function(x,y=NULL){
     stop("cauchy:ParamLengthMismatch")
   }
 
-  1 / (matrix(x,nrow=n,ncol=n) + matrix(y,nrow=n,ncol=n,byrow=T))
+  1 / (matrix(x, nrow = n, ncol = n) + matrix(y, nrow = n,ncol = n, byrow = T))
 }
 
 #' @name spdiags
@@ -50,11 +50,11 @@ cauchy_matrix <- function(x,y=NULL){
 #'
 #' @description Creates a sparse representation of multiple diagonal matrix
 #'
-#' @param A - matrix where columns correspond to the desired diagonals
-#' @param d - indices of the diagonals to be filled in. 0 is main diagonal. -1
+#' @param A matrix where columns correspond to the desired diagonals
+#' @param d indices of the diagonals to be filled in. 0 is main diagonal. -1
 #' is first subdiagonal and +1 is first superdiagonal.
-#' @param m - row dim
-#' @param n - col dim
+#' @param m row dim
+#' @param n col dim
 #'
 #' @return dgcMatrix sparse diagonal
 #'
@@ -70,10 +70,10 @@ spdiags <- function(A, d, m, n){
       j <- 1:n
     } else if(d_k > 0){
       i <- 1:(m-d_k)
-      j <- (1+d_k):n
+      j <- (1 + d_k):n
     } else if(d_k < 0){
-      i <- (1-d_k):m
-      j <- 1:(n+d_k)
+      i <- (1 - d_k):m
+      j <- 1:(n + d_k)
     }
     rows[[k]] <- i
     cols[[k]] <- j
@@ -83,7 +83,7 @@ spdiags <- function(A, d, m, n){
   rows  <- unlist(rows)
   cols  <- unlist(cols)
   A_vec <- unlist(A_vec)
-  B <- Matrix::sparseMatrix(i=rows, j=cols, x = A_vec,dims = c(m,n))
+  B <- sparseMatrix(i=rows, j=cols, x = A_vec,dims = c(m,n))
   return(B)
 }
 
@@ -92,10 +92,10 @@ spdiags <- function(A, d, m, n){
 #'
 #' @description Create a sparse tridiagonal matrix of dgcMatrix class.
 #'
-#' @param n - dimension of the square matrix
-#' @param x - subdiagonal (-1)
-#' @param y - diagonal (0)
-#' @param z - superdiagonal (+1)
+#' @param n dimension of the square matrix
+#' @param x subdiagonal (-1)
+#' @param y diagonal (0)
+#' @param z superdiagonal (+1)
 #'
 #' @return Sparse tridiagonal matrix
 tridiag <- function(n, x=NULL, y=NULL, z=NULL){
@@ -107,9 +107,9 @@ tridiag <- function(n, x=NULL, y=NULL, z=NULL){
   }
 
   if(max(c(length(x), length(y), length(z))) == 1){
-    x <- x * rep(1,n-1)
-    z <- z * rep(1,n-1)
-    y <- y * rep(1,n)
+    x <- x * rep(1, n-1)
+    z <- z * rep(1, n-1)
+    y <- y * rep(1, n)
   } else{
     nx <- length(x)
     ny <- length(y)
@@ -119,5 +119,5 @@ tridiag <- function(n, x=NULL, y=NULL, z=NULL){
     }
   }
   n <- length(y)
-  spdiags(matrix(c(x,0, y, 0,z),nrow=n), -1:1, n, n)
+  spdiags(matrix(c(x, 0, y, 0, z), nrow = n), -1:1, n, n)
 }

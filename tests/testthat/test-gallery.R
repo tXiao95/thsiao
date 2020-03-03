@@ -20,7 +20,7 @@ test_that("Tridiagonal matrix eigenvalues", {
   A <- tridiag(n, x, y, z)
   eigs <- sort(eigen(A)$values)
 
-  expect_equal(eigs, eigs_analytic)
+  expect_equal(eigs, eigs_analytic, tolerance = 0.00001)
 })
 
 test_that("Tridiagonal matrix is tridiagonal", {
@@ -34,5 +34,5 @@ test_that("Tridiagonal matrix is tridiagonal", {
     A[i,i] <- A[i+1,i] <- A[i,i+1] <- 0
   }
   A[n,n] <- 0
-  expect_equal(Matrix::norm(A), 0)
+  expect_equal(Matrix::norm(A), 0, tolerance = 0.00001)
 })

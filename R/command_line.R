@@ -1,3 +1,5 @@
+#' @importFrom utils readClipboard
+#'
 #' @name winPath
 #' @title Change Windows filepaths to R format
 #'
