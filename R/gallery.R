@@ -1,5 +1,7 @@
-#' @importFrom pracma pascal
+#' @importFrom pracma pascal Toeplitz
 #' @importFrom Matrix sparseMatrix norm
+
+# Binomial Matrix ---------------------------------------------------------
 
 #' @name binomial_matrix
 #' @title Create binomial matrix
@@ -18,8 +20,10 @@ binomial_matrix <- function(n){
   L %*% D %*% U
 }
 
+# Cauchy ------------------------------------------------------------------
+
 #' @name cauchy_matrix
-#' @title Create cauchy matrix
+#' @title Create Cauchy matrix
 #'
 #' @description Arguments \code{x} and \code{y} are vectors of length \code{n}. \code{C[i,j] = 1 / (x[i] + y[j])}
 #'
@@ -33,17 +37,17 @@ cauchy_matrix <- function(x,y=NULL){
     n <- x
     x <- 1:n
   }
-
   if(is.null(y)){
     y <- x
   }
-
   if(length(x) != length(y)){
     stop("cauchy:ParamLengthMismatch")
   }
 
   1 / (matrix(x, nrow = n, ncol = n) + matrix(y, nrow = n,ncol = n, byrow = T))
 }
+
+# Sparse Diagonal Matrix --------------------------------------------------
 
 #' @name spdiags
 #' @title Create sparse diagonal matrix
@@ -52,7 +56,7 @@ cauchy_matrix <- function(x,y=NULL){
 #'
 #' @param A matrix where columns correspond to the desired diagonals
 #' @param d indices of the diagonals to be filled in. 0 is main diagonal. -1
-#' is first subdiagonal and +1 is first superdiagonal.
+#'   is first subdiagonal and +1 is first superdiagonal.
 #' @param m row dim
 #' @param n col dim
 #'
@@ -87,8 +91,10 @@ spdiags <- function(A, d, m, n){
   return(B)
 }
 
+# Sparse tridiagonal matrix -----------------------------------------------
+
 #' @name tridiag
-#' @title Create a sparse tridiagonal matrix
+#' @title Create sparse tridiagonal matrix
 #'
 #' @description Create a sparse tridiagonal matrix of dgcMatrix class.
 #'
@@ -98,6 +104,8 @@ spdiags <- function(A, d, m, n){
 #' @param z superdiagonal (+1)
 #'
 #' @return Sparse tridiagonal matrix
+#'
+#' @export
 tridiag <- function(n, x=NULL, y=NULL, z=NULL){
   if(is.null(x)){
     x <- -1; y <- 2; z <- -1
@@ -120,4 +128,51 @@ tridiag <- function(n, x=NULL, y=NULL, z=NULL){
   }
   n <- length(y)
   spdiags(matrix(c(x, 0, y, 0, z), nrow = n), -1:1, n, n)
+}
+
+# Fiedler Symmetric matrix ------------------------------------------------
+
+#' @name fiedler
+#' @title Create Fiedler matrix
+#'
+#' @description Fiedler matrix that has a dominant positive eigenvalue and all others are negative
+#'
+#' @param c N-vector. If \code{c} is a scalar, then returns fiedler(1:c)
+#'
+#' @return a symmetric dense matrix A with a dominant positive eigenvalue and all others are negative.
+#'
+#' @export
+fiedler <- function(c){
+  if (!is.vector(c)){
+    stop("'c' is not a vector")
+  }
+  if(length(c) == 1){
+    c <- 1:c
+  }
+  n <- length(c)
+  A <- matrix(raw(), n, n)
+  A <- matrix(data = abs(c[col(A)] - c[row(A)]), nrow = n, ncol = n)
+  return(A)
+}
+
+# Circulant matrix --------------------------------------------------------
+
+#' @name circul
+#' @title Create circulant matrix
+#'
+#' @description Each row is obtained from the previous by cyclically permuting the
+#'   entries one step forward. A special Toeplitz matrix in which diagonals "wrap around"
+#'
+#' @param v first row of the matrix. If \code{v} is a scalar, then \code{C = circul(1:v)}
+#'
+#' @return a circulant matrix whose first row is the vector \code{v}
+#'
+#' @export
+circul <- function(v){
+  if(length(v) == 1){
+    v <- 1:v
+  }
+  n <- length(v)
+  A <- pracma::Toeplitz(c(v[1], v[n:2]), v)
+  return(A)
 }
