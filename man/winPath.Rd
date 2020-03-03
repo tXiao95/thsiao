@@ -4,9 +4,22 @@
 \alias{winPath}
 \title{Change Windows filepaths to R format}
 \usage{
-winPath(path)
+winPath(path = "clipboard")
+}
+\arguments{
+\item{path}{Filepath with \\ slashes that needs to be formatted. If left blank, will pull from the clipboard.}
+}
+\value{
+Filepath with forward slashes
 }
 \description{
 Convert Windows backslash filepaths to forward slashes to
 be compatible with R
+}
+\examples{
+# If Windows path on my clipboard
+winPath()
+# Input path
+winPath("C:\\\\Users\\\\user")
+
 }

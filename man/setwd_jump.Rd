@@ -17,3 +17,8 @@ None
 Changes working directory to folder up the chain, without
 needing to type full filepath or series of "../../.."
 }
+\examples{
+\dontrun{
+setwd_jump("Users")
+}
+}

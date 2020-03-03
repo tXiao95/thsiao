@@ -21,10 +21,9 @@
 #' scaled_x <- linScale(x, 0, 1)
 #' plot(x, scaled_x)
 linScale <- function(x, newmin = 0, newmax = 1){
-
-  min <- min(x)
-  max <- max(x)
-  (x - min)/(max - min) * (newmax - newmin) + newmin
+  oldmin <- min(x)
+  oldmax <- max(x)
+  return((x - oldmin)/(oldmax - oldmin) * (newmax - newmin) + newmin)
 }
 
 #' @name derivativeTest
@@ -65,7 +64,6 @@ derivativeTest <- function(f, f_grad, h, W, D, ...){
       d2[i] <- E_hD - E_W - h[i]*sum(diag(D %*% grad_E))
     }
   }
-
   return(list(d1=abs(d1), d2=abs(d2)))
 }
 

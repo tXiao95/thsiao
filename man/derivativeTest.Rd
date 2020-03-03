@@ -9,20 +9,19 @@ derivativeTest(f, f_grad, h, W, D, ...)
 \arguments{
 \item{f}{scalar-valued function to be evaluated}
 
-\item{f_grad}{function for derivative of \code{f}. Should take exact same arguments as \code{f}}
+\item{f_grad}{function for derivative of \code{f}. Should take exact same arguments as \code{f}, and be a row vector.}
 
 \item{h}{step sizes: must be (0,1]}
 
-\item{W}{fixed constant to evaluate the function at.}
+\item{W}{fixed constant to evaluate the function at. If multivariate, should be a column vector.}
 
-\item{D}{direction to move in from W.}
+\item{D}{direction to move in from W. If multivariate, should be a column vector}
 
 \item{...}{Any other arguments to evaluate \code{f(x)} and \code{f_grad(x)}}
 }
 \value{
-d1 first order differences
-
-d2 Second order differences
+list of two vectors, \code{d1} holds the first order differences which have slope close to 1, \code{d2} should
+be the second order differences which have slope close to 2.
 }
 \description{
 Derivative check for gradients, Jacobians, and Hessians based on Taylor's Theorem.

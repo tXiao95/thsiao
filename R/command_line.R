@@ -4,8 +4,21 @@
 #' @description Convert Windows backslash filepaths to forward slashes to
 #' be compatible with R
 #'
+#' @param path Filepath with \\ slashes that needs to be formatted. If left blank, will pull from the clipboard.
+#'
+#' @return Filepath with forward slashes
+#'
+#' @examples
+#' # If Windows path on my clipboard
+#' winPath()
+#' # Input path
+#' winPath("C:\\Users\\user")
+#'
 #' @export
-winPath <- function(path){
+winPath <- function(path="clipboard"){
+  if(path=="clipboard"){
+    path <- readClipboard()
+  }
   return(chartr("\\", "/", path))
 }
 
@@ -20,6 +33,10 @@ winPath <- function(path){
 #'
 #' @return None
 #'
+#' @examples
+#' \dontrun{
+#' setwd_jump("Users")
+#'}
 #' @export
 setwd_jump <- function(dir){
   path <- getwd()
