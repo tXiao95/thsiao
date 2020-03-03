@@ -1,10 +1,5 @@
 context("Command line tools")
 
-test_that("Windows paths are actually being changed correctly", {
-  s <- "C:\\Users\\user\\abc\\def"
-  testthat::expect_identical(winPath(s), "C:/Users/user/abc/def")
-})
-
 test_that("Changing directories correctly", {
   sample_path <- strsplit(getwd(), "/")[[1]]
   num_dir <- length(sample_path)
