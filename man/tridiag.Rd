@@ -2,7 +2,7 @@
 % Please edit documentation in R/gallery.R
 \name{tridiag}
 \alias{tridiag}
-\title{Create a sparse tridiagonal matrix}
+\title{Create sparse tridiagonal matrix}
 \usage{
 tridiag(n, x = NULL, y = NULL, z = NULL)
 }

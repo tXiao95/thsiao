@@ -1,2 +1,4 @@
-language: R
+language: r
 cache: packages
+warnings_are_errors: true
+sudo: required

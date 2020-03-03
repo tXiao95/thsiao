@@ -2,7 +2,7 @@
 % Please edit documentation in R/gallery.R
 \name{cauchy_matrix}
 \alias{cauchy_matrix}
-\title{Create cauchy matrix}
+\title{Create Cauchy matrix}
 \usage{
 cauchy_matrix(x, y = NULL)
 }
