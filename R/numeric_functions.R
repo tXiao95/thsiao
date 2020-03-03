@@ -1,4 +1,3 @@
-# Convenient functions for numeric tasks
 #' @importFrom assertthat is.scalar
 #'
 #' @name linScale

@@ -18,7 +18,7 @@
 #'
 #' @export
 winPath <- function(path="clipboard"){
-  if(path=="clipboard"){
+  if(path=="clipboard" & Sys.info()["sysname"] == "Windows"){
     path <- readClipboard()
   }
   return(chartr("\\", "/", path))
