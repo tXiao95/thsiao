@@ -1,5 +1,7 @@
 context("Gallery matrices")
 
+# Binomial matrix ---------------------------------------------------------
+
 test_that("Binomial matrix", {
   for(n in 2:30){
     A <- binomial_matrix(n)
@@ -8,6 +10,8 @@ test_that("Binomial matrix", {
     expect_equal(norm(B %*% B - diag(n)), 0)
   }
 })
+
+# Tridiagonal matrix ------------------------------------------------------
 
 test_that("Tridiagonal matrix eigenvalues", {
   # Are tridiagonal matrix eigenvalues satisfied by identity
@@ -37,6 +41,8 @@ test_that("Tridiagonal matrix is tridiagonal", {
   expect_equal(Matrix::norm(A), 0, tolerance = 0.00001)
 })
 
+# Fiedler matrix ----------------------------------------------------------
+
 test_that("Fiedler matrix has one dominant positive eigenvalue and symmetric", {
   A <- fiedler(10)
   eigs <- eigen(A)$values
@@ -52,3 +58,20 @@ test_that("Fiedler matrix has one dominant positive eigenvalue and symmetric", {
   expect_identical(isSymmetric(A), TRUE)
 })
 
+# Circulant matrix --------------------------------------------------------
+
+test_that("Circulant matrix is circular", {
+  # Check every diagonal in the matrix is of the same value
+  n <- 100
+  A <- circul(n)
+  B <- circul(rnorm(n))
+
+  i <- row(A)
+  j <- col(A)
+
+  bound <- (2*n - 2) / 2
+  for (k in -bound:bound){
+    expect_equal(length(unique(A[i == (j + k)])), 1)
+    expect_equal(length(unique(B[i == (j + k)])), 1)
+  }
+})

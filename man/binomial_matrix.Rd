@@ -10,7 +10,7 @@ binomial_matrix(n)
 \item{n}{- row dimension}
 }
 \description{
-Binomial matrix: an N-by-N matrix with
-integer entries such that A^2 = 2^(N-1)*EYE(N)
+Binomial matrix: an N-by-N multiple of an involuntory matrix with
+integer entries such that $A^2 = 2^(N-1)*I_N$
 Thus B = A*2^((1-N)/2) is involutory, that is B^2 = EYE(N)
 }

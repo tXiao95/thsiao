@@ -1,13 +1,13 @@
-#' @importFrom pracma pascal Toeplitz
-#' @importFrom Matrix sparseMatrix norm
+#' @importFrom pracma pascal Toeplitz Diag
+#' @importFrom Matrix sparseMatrix norm triu tril
 
 # Binomial Matrix ---------------------------------------------------------
 
 #' @name binomial_matrix
 #' @title Create binomial matrix
 #'
-#' @description Binomial matrix: an N-by-N matrix with
-#' integer entries such that A^2 = 2^(N-1)*EYE(N)
+#' @description Binomial matrix: an N-by-N multiple of an involuntory matrix with
+#' integer entries such that $A^2 = 2^(N-1)*I_N$
 #' Thus B = A*2^((1-N)/2) is involutory, that is B^2 = EYE(N)
 #'
 #' @param n - row dimension
@@ -175,4 +175,60 @@ circul <- function(v){
   n <- length(v)
   A <- pracma::Toeplitz(c(v[1], v[n:2]), v)
   return(A)
+}
+
+# Toeplitz matrix with sensitive eigenvalues ------------------------------
+
+#' @name grcar
+#' @title Create Toeplitz matrix with sensitive eigenvalues
+#'
+#' @description Eigenvalues are sensitive.
+#'
+#' @return n by n Toeplitz matrix with -1 on subdiagonal, 1 on diagonal, and k superdiagionals of 1s.
+#'
+#' @export
+grcar <- function(n, k=NULL){
+  if(is.null(k)){
+    k <- 3
+  }
+  A <- tril(triu(matrix(1, nrow = n, ncol = n)), k)
+  i <- row(A)
+  j <- col(A)
+  A[i == j + 1] <- -1
+  return(A)
+}
+
+# Leslie matrix -----------------------------------------------------------
+
+#' @name leslie
+#' @title Create Leslie population model matrix
+#'
+#' @description N by N matrix from Leslie population model with average birth and survival rates.
+#'
+#' @param a average birth numbers (first row)
+#' @param b survival rates (subdiagonal)
+#' @param sparse whether to return a sparse matrix
+#'
+#' @return N by N Leslie population model matrix
+#'
+#' @export
+leslie <- function(a, b=NULL, sparse = F){
+  if(is.null(b)){
+    n <- a
+    a <- rep(1, n)
+    b <- rep(1, n-1)
+  }
+  if(length(a) != length(b) + 1){
+    stop("a must have length = length(b) + 1")
+  }
+  if(sparse){
+    n <- length(a)
+    i <- c(rep(1, n), 2:n)
+    j <- c(1:n, 1:(n-1))
+    L <- sparseMatrix(i = i, j = j, x = c(a, b))
+  } else{
+    L <- Diag(b, -1)
+    L[1,] <- a
+  }
+  return(L)
 }
