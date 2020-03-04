@@ -15,9 +15,10 @@
 #' @export
 binomial_matrix <- function(n){
   L <- abs(pascal(n, 1))
-  U <- L[n:1,n:1]
-  D <- diag((-2)^(0:(n-1)))
-  L %*% D %*% U
+  U <- L[n:1, n:1]
+  D <- diag((-2)^(0:(n - 1)))
+
+  return(L %*% D %*% U)
 }
 
 # Cauchy ------------------------------------------------------------------
@@ -44,7 +45,7 @@ cauchy_matrix <- function(x,y=NULL){
     stop("cauchy:ParamLengthMismatch")
   }
 
-  1 / (matrix(x, nrow = n, ncol = n) + matrix(y, nrow = n,ncol = n, byrow = T))
+  return(1 / (matrix(x, nrow = n, ncol = n) + matrix(y, nrow = n,ncol = n, byrow = T)))
 }
 
 # Sparse Diagonal Matrix --------------------------------------------------
@@ -87,7 +88,8 @@ spdiags <- function(A, d, m, n){
   rows  <- unlist(rows)
   cols  <- unlist(cols)
   A_vec <- unlist(A_vec)
-  B <- sparseMatrix(i=rows, j=cols, x = A_vec,dims = c(m,n))
+  B <- sparseMatrix(i = rows, j = cols, x = A_vec,dims = c(m, n))
+
   return(B)
 }
 
@@ -127,7 +129,8 @@ tridiag <- function(n, x=NULL, y=NULL, z=NULL){
     }
   }
   n <- length(y)
-  spdiags(matrix(c(x, 0, y, 0, z), nrow = n), -1:1, n, n)
+
+  return(spdiags(matrix(c(x, 0, y, 0, z), nrow = n), -1:1, n, n))
 }
 
 # Fiedler Symmetric matrix ------------------------------------------------
@@ -152,6 +155,7 @@ fiedler <- function(c){
   n <- length(c)
   A <- matrix(raw(), n, n)
   A <- matrix(data = abs(c[col(A)] - c[row(A)]), nrow = n, ncol = n)
+
   return(A)
 }
 
@@ -174,6 +178,7 @@ circul <- function(v){
   }
   n <- length(v)
   A <- pracma::Toeplitz(c(v[1], v[n:2]), v)
+
   return(A)
 }
 
@@ -198,6 +203,7 @@ grcar <- function(n, k=NULL){
   i <- row(A)
   j <- col(A)
   A[i == j + 1] <- -1
+
   return(A)
 }
 
@@ -233,6 +239,7 @@ leslie <- function(a, b=NULL, sparse = F){
     L <- Diag(b, -1)
     L[1,] <- a
   }
+
   return(L)
 }
 
@@ -263,5 +270,28 @@ lauchli <- function(n, mu = NULL, sparse = F){
     A <- mu * diag(n)
     A <- rbind(rep(1, n), A)
   }
+
+  return(A)
+}
+
+# Lehmer matrix -----------------------------------------------------------
+
+#' @name lehmer
+#' @title Create Lehmer matrix
+#'
+#' @description the symmetric positive-definite matrix such that A[i,j] = i/j, for j >= i
+#'
+#' @param n order of matrix
+#'
+#' @export
+lehmer <- function(n){
+  A <- matrix(0, n, n)
+  i <- row(A)
+  j <- col(A)
+  I <- i / j
+  J <- j / i
+  A[j >= i] <- I[j >= i]
+  A[j < i] <- J[j < i]
+
   return(A)
 }

@@ -1,5 +1,4 @@
 context("Gallery matrices")
-
 # Binomial matrix ---------------------------------------------------------
 
 test_that("Binomial matrix", {
@@ -38,7 +37,7 @@ test_that("Tridiagonal matrix is tridiagonal", {
     A[i,i] <- A[i+1,i] <- A[i,i+1] <- 0
   }
   A[n,n] <- 0
-  expect_equal(Matrix::norm(A), 0, tolerance = 0.00001)
+  expect_equal(norm(A), 0, tolerance = 0.00001)
 })
 
 # Fiedler matrix ----------------------------------------------------------
@@ -74,4 +73,20 @@ test_that("Circulant matrix is circular", {
     expect_equal(length(unique(A[i == (j + k)])), 1)
     expect_equal(length(unique(B[i == (j + k)])), 1)
   }
+})
+
+# Lehmer matrix -----------------------------------------------------------
+
+test_that("Lehmer matrix is correct", {
+  A2 <- matrix(c(1, 1/2, 1/2, 1), nrow = 2)
+  B2 <- lehmer(2)
+  expect_equal(norm(A2 - B2), 0)
+
+  A3 <- matrix(c(1, 1/2, 1/3, 1/2, 1, 2/3, 1/3, 2/3, 1), nrow = 3)
+  B3 <- lehmer(3)
+  expect_equal(norm(A3 - B3), 0)
+
+  A4 <- matrix(c(1, 1/2, 1/3, 1/4, 1/2, 1, 2/3, 1/2, 1/3, 2/3, 1, 3/4, 1/4, 1/2, 3/4, 1), nrow = 4)
+  B4 <- lehmer(4)
+  expect_equal(norm(A4 - B4), 0)
 })
