@@ -6,6 +6,11 @@
 \usage{
 grcar(n, k = NULL)
 }
+\arguments{
+\item{n}{dimension of the square matrix}
+
+\item{k}{number of superdiagonals of ones}
+}
 \value{
 n by n Toeplitz matrix with -1 on subdiagonal, 1 on diagonal, and k superdiagionals of 1s.
 }

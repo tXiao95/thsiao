@@ -184,6 +184,9 @@ circul <- function(v){
 #'
 #' @description Eigenvalues are sensitive.
 #'
+#' @param n dimension of the square matrix
+#' @param k number of superdiagonals of ones
+#'
 #' @return n by n Toeplitz matrix with -1 on subdiagonal, 1 on diagonal, and k superdiagionals of 1s.
 #'
 #' @export
