@@ -1,6 +1,6 @@
 # Model fitting
 #' @importFrom MASS mvrnorm
-#' @importFrom stats .checkMFClasses delete.response model.frame model.matrix na.pass terms vcov
+#' @importFrom stats .checkMFClasses delete.response model.frame model.matrix na.pass terms vcov family
 
 # simNew generic ---------------------------------------------------
 
