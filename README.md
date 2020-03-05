@@ -4,8 +4,8 @@
 Personal convenience functions for command line and numerical tools. Also for package demonstrative purposes.
 
 ## Modeling tools
-While there are [packages for simulating responses from a distribution corresponding to a fitted model object](https://cran.r-project.org/web/packages/arm/arm.pdf), and functions that
-predict responses given new data, there are no methods that simulate responses for new data. Such simulation is important in 
+While in R there are [functions for simulating responses from a distribution corresponding to a fitted model object](https://cran.r-project.org/web/packages/arm/arm.pdf), and [functions that
+predict responses given new data](https://stat.ethz.ch/R-manual/R-devel/library/stats/html/predict.html), there are no methods that simulate responses for new data. Such simulation is important in 
 Monte Carlo methods. In the completely linear case, standard matrix multiplication is simple but code becomes more complicated when splines like `splines::bs` or 
 other transformations are added into the formula. `simNew` is a `S3` method currently defined for `lm` and `glm` objects that simulates responses
 on new data not originally used to fit the model object. For example, for a `lm` object, `simNew` will sample from the multivariate normal distribution 
@@ -13,7 +13,7 @@ defined by the coefficients of the model, and apply those samples to the new dat
 in the new dataset, and `n` is the number of simulations requested.
 
 ## MATLAB gallery of test matrices
-Bringing the MATLAB gallery of test matrices into R. https://www.mathworks.com/help/matlab/ref/gallery.html
+Bringing the [MATLAB gallery of test matrices](https://www.mathworks.com/help/matlab/ref/gallery.html) into R. For testing numerical methods. 
 
-## Command line and SGE cluster tools 
-SGE cluster tools like easier profiling, monitoring, and manipulating of jobs from R. Also command line interfacing from R.
+## SGE cluster tools 
+Tools for easier profiling, monitoring, and manipulating of SGE cluster jobs from R.
