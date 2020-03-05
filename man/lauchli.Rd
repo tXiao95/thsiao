@@ -17,6 +17,6 @@ lauchli(n, mu = NULL, sparse = F)
 Lauchli matrix.
 }
 \description{
-the matrix [ones(1,n); mu*eye(n)]. Well-known example in least squares of the
-  danger of forming t(A) %*% A
+the (N + 1) x (N) matrix [ones(1,n); mu*eye(n)]. Well-known example in least squares of the
+  danger of forming t(A) %*% A (due to inexact arithmetic, gives singular matrix)
 }

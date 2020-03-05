@@ -42,7 +42,7 @@ test_that("Tridiagonal matrix is tridiagonal", {
 
 # Fiedler matrix ----------------------------------------------------------
 
-test_that("Fiedler matrix has one dominant positive eigenvalue and symmetric", {
+test_that("Fiedler matrix has one dominant positive eigenvalue (rest negative) and symmetric", {
   A <- fiedler(10)
   eigs <- eigen(A)$values
   expect_more_than(eigs[1], 0)
