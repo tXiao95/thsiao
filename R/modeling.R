@@ -2,26 +2,26 @@
 #' @importFrom MASS mvrnorm
 #' @importFrom stats .checkMFClasses delete.response model.frame model.matrix na.pass terms vcov
 
-# simulateDraws generic ---------------------------------------------------
+# simNew generic ---------------------------------------------------
 
-#' @name simulateDraws
-#' @title Generate simulations of a fitted model object on new data
+#' @name simNew
+#' @title Generate simulations of response of a fitted model object on new data
 #'
 #' @description \code{simulateDraws} is a generic function for generating simulation predictions
-#' from a model object and newdata.
+#' from a model object and new data.
 #'
 #' @param object model object for which draws of prediction is desired
 #' @param ... additional arguments affecting the prediction
 #'
 #' @export
-simulateDraws <- function(object, ...){
-  UseMethod("simulateDraws", object)
+simNew <- function(object, ...){
+  UseMethod("simNew", object)
 }
 
-# simulateDraws.lm  -------------------------------------------------------
+# simNew.lm  -------------------------------------------------------
 
-#' @name simulateDraws.lm
-#' @title Generate simulations of a fitted \code{lm} object on new data
+#' @name simNew.lm
+#' @title Generate simulations of response of a fitted \code{lm} object on new data
 #'
 #' @description Returns a matrix of simulated responses from a fitted lm object, applied to a new dataset
 #'   separate from the original data used to fit the model.
@@ -35,7 +35,7 @@ simulateDraws <- function(object, ...){
 #'   and each colulmn corresponds to a draw/simulation.
 #'
 #' @export
-simulateDraws.lm <- function(object, newdata, nsim = 100, ...){
+simNew.lm <- function(object, newdata, nsim = 100, ...){
   tt <- terms(object)
   # Check whether model object inherits lm ... otherwise warning
   if (!inherits(object, "lm"))
@@ -49,7 +49,7 @@ simulateDraws.lm <- function(object, newdata, nsim = 100, ...){
     .checkMFClasses(cl, m)
   X <- model.matrix(Terms, m, contrasts.arg = object$contrasts)
 
-  # Generate offset
+  # Generate offset based on model object
   offset <- rep(0, nrow(X))
   if (!is.null(off.num <- attr(tt, "offset")))
     for (i in off.num) offset <- offset + eval(attr(tt,
@@ -65,7 +65,7 @@ simulateDraws.lm <- function(object, newdata, nsim = 100, ...){
   if (p < ncol(X) && !(missing(newdata) || is.null(newdata)))
     warning("prediction from a rank-deficient fit may be misleading")
 
-  # Generate draws of the coefficients from MVN, and add on offset
+  # Generate draws of the coefficients from MVN, apply to newdata, and add on offset
   beta <- object$coefficients
   V <- vcov(object)
   B <- mvrnorm(n = nsim, mu = beta, Sigma = V)
@@ -76,3 +76,22 @@ simulateDraws.lm <- function(object, newdata, nsim = 100, ...){
 
   return(predictor)
 }
+
+# simNew.glm -------------------------------------------------------
+#' @name simNew.glm
+#' @title Generate simulations of response of a fitted \code{glm} object on new data
+#'
+#' @description Returns a matrix of simulated responses from a fitted \code{glm} object, applied to a new dataset
+#'   separate from the original data used to fit the model.
+#'
+#' @param object object of class inheriting from \code{glm}
+#' @param ... further arguments passed to or from other methods
+#'
+#' @return a \code{nrow(newdata) x nsim} sized matrix. Each row corresponds to an observation in the new dataset,
+#'   and each colulmn corresponds to a draw/simulation.
+#'
+#' @export
+simNew.glm <- function(object, ...){
+  NextMethod(generic = "simNew")
+}
+
