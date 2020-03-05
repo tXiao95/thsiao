@@ -15,4 +15,7 @@ Imports:
     assertthat (>= 0.2.1),
     pracma (>= 2.2.5)
 Suggests: 
-    testthat (>= 2.1.0)
+    testthat (>= 2.1.0),
+    knitr,
+    rmarkdown
+VignetteBuilder: knitr

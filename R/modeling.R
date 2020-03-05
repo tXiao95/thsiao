@@ -74,7 +74,7 @@ simNew.lm <- function(object, newdata, nsim = 100, ...){
     # Broadcasting offset, which will sum offset to each column of predictor matrix
     predictor <- predictor + offset
 
-  return(predictor)
+  return(list(Y = predictor, B = B))
 }
 
 # simNew.glm -------------------------------------------------------

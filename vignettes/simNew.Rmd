@@ -1,0 +1,40 @@
+---
+title: "Simulating linear model responses for new data"
+author: "Thomas Hsiao"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{simNew}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+Often times we want to generate simulations for a fitted model on a new dataset. In other words, we want to apply draws from the distribution of our fitted model to generate draws of responses associated with our new data. In the linear case, this amounts to sampling from the multivariate Gaussian with mean equal to the coefficient vector and covariance matrix corresponding to the variance-covariance matrix of the coefficients. Let's see how one can go about doing that. 
+
+\begin{gather}
+\beta \sim \text{MVN}(\beta,\bf{\Sigma})
+\end{gather}
+
+```{r}
+model <- lm(Sepal.Length ~ splines::bs(Sepal.Width) + Species, data = iris)
+beta <- model$coefficients
+V <- vcov(model)
+Beta <- MASS::mvrnorm(10, beta, V)
+head(Beta)
+```
+
+We've fit our model and then generated draws of our coefficients in a $n \times p$ matrix. Say our new data set is just our old ones replicated twice. 
+
+```{r}
+newdata <- rbind(iris, iris)
+```
+
+We now create our design matrix.
+
+```{r}
+X <- model.matrix(model, data = newdata)
+Y <-  X %*% t(Beta)
+head(Y)
+```
+
+That's it! So the `simNew` function just packages all of this code into a single method, with some additional checks like making sure the contrasts are defined correctly and the rank of the design matrix is okay. We end up with the same result, the simulations of responses with the simulations cast wide. 
+
