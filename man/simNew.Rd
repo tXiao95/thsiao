@@ -12,6 +12,6 @@ simNew(object, ...)
 \item{...}{additional arguments affecting the prediction}
 }
 \description{
-\code{simulateDraws} is a generic function for generating simulation predictions
+\code{simNew} is a generic function for generating simulation predictions
 from a model object and new data.
 }

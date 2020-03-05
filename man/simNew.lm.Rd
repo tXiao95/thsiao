@@ -16,8 +16,9 @@
 \item{...}{further arguments passed to or from other methods}
 }
 \value{
-a \code{nrow(newdata) x nsim} sized matrix. Each row corresponds to an observation in the new dataset,
-  and each colulmn corresponds to a draw/simulation.
+a list with \code{Y}, a \code{nrow(newdata) x nsim} sized matrix where each row corresponds to an observation
+in the new dataset and each colulmn corresponds to a draw/simulation. Second element of the list is \code{Beta}, the matrix
+of draws sampled from the MVN of regression coefficients.
 }
 \description{
 Returns a matrix of simulated responses from a fitted lm object, applied to a new dataset

@@ -7,7 +7,7 @@
 #' @name simNew
 #' @title Generate simulations of response of a fitted model object on new data
 #'
-#' @description \code{simulateDraws} is a generic function for generating simulation predictions
+#' @description \code{simNew} is a generic function for generating simulation predictions
 #' from a model object and new data.
 #'
 #' @param object model object for which draws of prediction is desired
@@ -31,8 +31,9 @@ simNew <- function(object, ...){
 #' @param nsim the number of simulations to return for each observation in the new dataset. Must be greater than 1.
 #' @param ... further arguments passed to or from other methods
 #'
-#' @return a \code{nrow(newdata) x nsim} sized matrix. Each row corresponds to an observation in the new dataset,
-#'   and each colulmn corresponds to a draw/simulation.
+#' @return a list with \code{Y}, a \code{nrow(newdata) x nsim} sized matrix where each row corresponds to an observation
+#' in the new dataset and each colulmn corresponds to a draw/simulation. Second element of the list is \code{Beta}, the matrix
+#' of draws sampled from the MVN of regression coefficients.
 #'
 #' @export
 simNew.lm <- function(object, newdata, nsim = 100, ...){
@@ -74,7 +75,7 @@ simNew.lm <- function(object, newdata, nsim = 100, ...){
     # Broadcasting offset, which will sum offset to each column of predictor matrix
     predictor <- predictor + offset
 
-  return(list(Y = predictor, B = B))
+  return(list(Y = predictor, Beta = B))
 }
 
 # simNew.glm -------------------------------------------------------
@@ -85,13 +86,27 @@ simNew.lm <- function(object, newdata, nsim = 100, ...){
 #'   separate from the original data used to fit the model.
 #'
 #' @param object object of class inheriting from \code{glm}
+#' @param newdata a data frame where to look for variables to predict
+#' @param nsim the number of simulations to return for each observation in the new dataset. Must be greater than 1.
+#' @param type the type of prediction required. For a binomial model, \code{link} would yield the log-odds and \code{response}
+#'   would yield the predicted probabilities.
 #' @param ... further arguments passed to or from other methods
 #'
-#' @return a \code{nrow(newdata) x nsim} sized matrix. Each row corresponds to an observation in the new dataset,
-#'   and each colulmn corresponds to a draw/simulation.
+#' @return a list with \code{Y}, a \code{nrow(newdata) x nsim} sized matrix where each row corresponds to an observation
+#' in the new dataset and each colulmn corresponds to a draw/simulation. Second element of the list is \code{Beta}, the matrix
+#' of draws sampled from the MVN of regression coefficients.
 #'
 #' @export
-simNew.glm <- function(object, ...){
-  NextMethod(generic = "simNew")
+simNew.glm <- function(object, newdata, nsim, type = c("link", "response"), ...){
+  type <- match.arg(type)
+  pred <- simNew.lm(object, newdata, nsim)
+
+  Y <- pred$Y
+  B <- pred$Y
+  if(type == "response"){
+    Y <- family(object)$linkinv(Y)
+  }
+
+  return(list(Y = Y, Beta = B))
 }
 

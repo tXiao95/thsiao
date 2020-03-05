@@ -4,16 +4,24 @@
 \alias{simNew.glm}
 \title{Generate simulations of response of a fitted \code{glm} object on new data}
 \usage{
-\method{simNew}{glm}(object, ...)
+\method{simNew}{glm}(object, newdata, nsim, type = c("link", "response"), ...)
 }
 \arguments{
 \item{object}{object of class inheriting from \code{glm}}
 
+\item{newdata}{a data frame where to look for variables to predict}
+
+\item{nsim}{the number of simulations to return for each observation in the new dataset. Must be greater than 1.}
+
+\item{type}{the type of prediction required. For a binomial model, \code{link} would yield the log-odds and \code{response}
+would yield the predicted probabilities.}
+
 \item{...}{further arguments passed to or from other methods}
 }
 \value{
-a \code{nrow(newdata) x nsim} sized matrix. Each row corresponds to an observation in the new dataset,
-  and each colulmn corresponds to a draw/simulation.
+a list with \code{Y}, a \code{nrow(newdata) x nsim} sized matrix where each row corresponds to an observation
+in the new dataset and each colulmn corresponds to a draw/simulation. Second element of the list is \code{Beta}, the matrix
+of draws sampled from the MVN of regression coefficients.
 }
 \description{
 Returns a matrix of simulated responses from a fitted \code{glm} object, applied to a new dataset
