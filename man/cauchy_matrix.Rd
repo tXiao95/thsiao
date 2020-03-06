@@ -12,5 +12,6 @@ cauchy_matrix(x, y = NULL)
 \item{y}{vector of length n}
 }
 \description{
-Arguments \code{x} and \code{y} are vectors of length \code{n}. \code{C[i,j] = 1 / (x[i] + y[j])}
+Arguments \code{x} and \code{y} are vectors of length \code{n}.
+  \code{C[i,j] = 1 / (x[i] + y[j])}
 }
