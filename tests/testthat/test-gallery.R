@@ -12,7 +12,6 @@ test_that("Binomial matrix", {
   }
 })
 
-
 # Chebspec matrix ---------------------------------------------------------
 
 test_that("Chebspec matrix", {
