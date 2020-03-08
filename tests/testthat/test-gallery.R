@@ -1,4 +1,7 @@
 context("Gallery matrices")
+
+library(pracma)
+
 # Binomial matrix ---------------------------------------------------------
 
 test_that("Binomial matrix", {
@@ -92,9 +95,17 @@ test_that("Circulant matrix is circular", {
   j <- col(A)
 
   bound <- (2*n - 2) / 2
+  # Check that matrix is Toeplitz (diagonals all equal)
   for (k in -bound:bound){
+    # Check that matrix is Toeplitz (diagonals all equal)
     expect_equal(length(unique(A[i == (j + k)])), 1)
     expect_equal(length(unique(B[i == (j + k)])), 1)
+
+    # Check that matrix is circulant: ith diagonal equal to (i+n)th diagonal
+    if(k < 0){
+      expect_equal(unique(Diag(A, k = k)), unique(Diag(A, k = k + n)))
+      expect_equal(unique(Diag(B, k = k)), unique(Diag(B, k = k + n)))
+    }
   }
 })
 
