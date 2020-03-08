@@ -1,7 +1,7 @@
 #' @importFrom pracma pascal Toeplitz Diag
 #' @importFrom Matrix sparseMatrix norm triu tril
 
-# Binomial Matrix ---------------------------------------------------------
+# binomial_matrix: binomial matrix ---------------------------------------------------------
 
 #' @name binomial_matrix
 #' @title Create binomial matrix
@@ -21,7 +21,7 @@ binomial_matrix <- function(n){
   return(L %*% D %*% U)
 }
 
-# Cauchy ------------------------------------------------------------------
+# cauchy_matrix: Cauchy matrix ------------------------------------------------------------------
 
 #' @name cauchy_matrix
 #' @title Create Cauchy matrix
@@ -49,7 +49,7 @@ cauchy_matrix <- function(x,y=NULL){
   return(1 / (matrix(x, nrow = n, ncol = n) + matrix(y, nrow = n, ncol = n, byrow = T)))
 }
 
-# Chebspec matrix ---------------------------------------------------------
+# chebspec: Chebyshev spectral differentiation matrix ---------------------------------------------------------
 
 #' @name chebspec
 #' @title Create Chebyshev spectral differentiation matrix
@@ -105,7 +105,7 @@ chebspec <- function(n, k = NULL){
   return(C)
 }
 
-# Chebvand matrix ---------------------------------------------------------
+# chebvand: Vandermonde-like matrix for Chebyshev polynomials ---------------------------------------------------------
 
 #' @name chebvand
 #' @title Creating Vandermonde-like matrix for the Chebyshev polynomials
@@ -157,6 +157,79 @@ chebvand <- function(p, m = NULL){
   }
 
   return(C)
+}
+
+# chow: Singular Toeplitz lower Hessenberg matrix -------------------------------
+
+#' @name chow
+#' @title Creating singular Toeplitz lower Hessenberg matrix
+#'
+#' @description returns matrix \code{A = H(alpha) + delta * EYE}, such that
+#'   \code{H[i,j] = alpha^(i-j+1)}.
+#'
+#' @param n order of the matrix
+#' @param alpha defaults to 1
+#' @param delta defaults to 0
+#'
+#' @export
+chow <- function(n, alpha = 1, delta = 0){
+  row <- alpha^(1:n)
+  col <- c(alpha, 1, rep(0,n-2))
+  A <- Toeplitz(row, col) + delta * diag(n)
+
+  return(A)
+}
+
+# circul: Circulant matrix --------------------------------------------------------
+
+#' @name circul
+#' @title Create circulant matrix
+#'
+#' @description Each row is obtained from the previous by cyclically permuting the
+#'   entries one step forward. A special Toeplitz matrix in which diagonals "wrap around"
+#'
+#' @param v first row of the matrix. If \code{v} is a scalar, then \code{C = circul(1:v)}
+#'
+#' @return a circulant matrix whose first row is the vector \code{v}
+#'
+#' @export
+circul <- function(v){
+  if(length(v) == 1){
+    v <- 1:v
+  }
+  n <- length(v)
+  A <- pracma::Toeplitz(c(v[1], v[n:2]), v)
+
+  return(A)
+}
+
+
+# clement: Tridiagonal matrix with zero diagonal entries ------------------
+
+clement <- function(n, k = 0){
+  n <- n - 1
+  z <- 1:n
+  x <- n:1
+
+  if(k == 0){
+    A <- Diag(x, -1) + Diag(z, 1)
+  } else{
+    y <- sqrt(x * z)
+    A <- Diag(y, -1) + Diag(y, 1)
+  }
+
+  return(A)
+}
+
+# compar: Comparison matrices ---------------------------------------------
+
+compar <- function(A, k = 0){
+  m <- nrow(A)
+  n <- ncol(A)
+
+  if(k == 0){
+    C <- -abs(A)
+  }
 }
 
 # Sparse Diagonal Matrix --------------------------------------------------
@@ -266,29 +339,6 @@ fiedler <- function(c){
   n <- length(c)
   A <- matrix(raw(), n, n)
   A <- matrix(data = abs(c[col(A)] - c[row(A)]), nrow = n, ncol = n)
-
-  return(A)
-}
-
-# Circulant matrix --------------------------------------------------------
-
-#' @name circul
-#' @title Create circulant matrix
-#'
-#' @description Each row is obtained from the previous by cyclically permuting the
-#'   entries one step forward. A special Toeplitz matrix in which diagonals "wrap around"
-#'
-#' @param v first row of the matrix. If \code{v} is a scalar, then \code{C = circul(1:v)}
-#'
-#' @return a circulant matrix whose first row is the vector \code{v}
-#'
-#' @export
-circul <- function(v){
-  if(length(v) == 1){
-    v <- 1:v
-  }
-  n <- length(v)
-  A <- pracma::Toeplitz(c(v[1], v[n:2]), v)
 
   return(A)
 }
