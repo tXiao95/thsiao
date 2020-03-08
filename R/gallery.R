@@ -42,6 +42,7 @@ cauchy_matrix <- function(x,y=NULL){
   if(is.null(y)){
     y <- x
   }
+
   if(length(x) != length(y)){
     stop("cauchy:ParamLengthMismatch")
   }
@@ -232,7 +233,7 @@ compar <- function(A, k = 0){
   }
 }
 
-# Sparse Diagonal Matrix --------------------------------------------------
+# spdiags: Sparse Diagonal Matrix --------------------------------------------------
 
 #' @name spdiags
 #' @title Create sparse diagonal matrix
@@ -277,7 +278,7 @@ spdiags <- function(A, d, m, n){
   return(B)
 }
 
-# Sparse tridiagonal matrix -----------------------------------------------
+# tridiag: Sparse tridiagonal matrix -----------------------------------------------
 
 #' @name tridiag
 #' @title Create sparse tridiagonal matrix
@@ -317,7 +318,7 @@ tridiag <- function(n, x=NULL, y=NULL, z=NULL){
   return(spdiags(matrix(c(x, 0, y, 0, z), nrow = n), -1:1, n, n))
 }
 
-# Fiedler Symmetric matrix ------------------------------------------------
+# fiedler: Fiedler Symmetric matrix ------------------------------------------------
 
 #' @name fiedler
 #' @title Create Fiedler matrix
@@ -343,7 +344,7 @@ fiedler <- function(c){
   return(A)
 }
 
-# Toeplitz matrix with sensitive eigenvalues ------------------------------
+# grcar: Toeplitz matrix with sensitive eigenvalues ------------------------------
 
 #' @name grcar
 #' @title Create Toeplitz matrix with sensitive eigenvalues
@@ -368,7 +369,7 @@ grcar <- function(n, k=NULL){
   return(A)
 }
 
-# Leslie matrix -----------------------------------------------------------
+# leslie: Leslie matrix -----------------------------------------------------------
 
 #' @name leslie
 #' @title Create Leslie population model matrix
@@ -404,7 +405,7 @@ leslie <- function(a, b=NULL, sparse = F){
   return(L)
 }
 
-# Lauchli matrix ----------------------------------------------------------
+# lauchli: Lauchli matrix ----------------------------------------------------------
 
 #' @name lauchli
 #' @title Create Lauchli Matrix
@@ -435,7 +436,7 @@ lauchli <- function(n, mu = NULL, sparse = F){
   return(A)
 }
 
-# Lehmer matrix -----------------------------------------------------------
+# lehmer: Lehmer matrix -----------------------------------------------------------
 
 #' @name lehmer
 #' @title Create Lehmer matrix
