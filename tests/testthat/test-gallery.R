@@ -47,6 +47,11 @@ test_that("Cauchy matrix is cauchy", {
   A <- cauchy_matrix(x)
   B <- matrix(c(1/2, 1/3,1/4,1/3,1/4,1/5,1/4,1/5,1/6),nrow=3)
   expect_equal(norm(A-B),0)
+
+  # unequal lengths
+  x <- 2:3
+  y <- 1:100
+  expect_error(cauchy_matrix(x, y))
 })
 
 # chebspec: Chebyshev spectral differentiation matrix ---------------------------------------------------------
@@ -55,12 +60,14 @@ test_that("Chebspec matrix is nilpotent", {
   C <- chebspec(4)
   # C is nilpotent, k=0
   expect_equal(norm(C %*% C %*% C %*% C), 0)
+
   # C has nullspace dim 1
   sigmas <- svd(C)$d
   smallest <- sigmas[length(sigmas)]
   next_smallest <- sigmas[length(sigmas)-1]
   expect_equal(smallest, 0)
   expect_true(next_smallest > sqrt(.Machine$double.eps))
+
   # and the null vector is all ones
   expect_equal(norm(C %*% c(1,1,1,1)), 0)
 
@@ -73,6 +80,45 @@ test_that("Chebspec matrix is nilpotent", {
 # chebvand: Vandermonde-like matrix for Chebyshev polynomials ----------------------------------------------------------------
 
 # test_that()
+
+# chow: Singular Toeplitz lower Hessenberg matrix -------------------------
+# circul: Circulant matrix --------------------------------------------------------
+
+test_that("Circulant matrix is circular", {
+  # Check every diagonal in the matrix is of the same value (Toeplitz)
+  n <- 100
+  A <- circul(n)
+  B <- circul(rnorm(n))
+
+  i <- row(A)
+  j <- col(A)
+
+  bound <- (2*n - 2) / 2
+  for (k in -bound:bound){
+    # Check that matrix is Toeplitz (diagonals all equal)
+    expect_equal(length(unique(A[i == (j + k)])), 1)
+    expect_equal(length(unique(B[i == (j + k)])), 1)
+
+    # Check that matrix is circulant: ith diagonal equal to (i+n)th diagonal
+    if(k < 0){
+      expect_equal(unique(Diag(A, k = k)), unique(Diag(A, k = k + n)))
+      expect_equal(unique(Diag(B, k = k)), unique(Diag(B, k = k + n)))
+    }
+  }
+})
+
+# clement: Tridagonal matrix with 0 diagonal ------------------------------
+
+test_that("clement matrix", {
+  # Diagonal is 0
+  A <- clement(10)
+  B <- clement(10,1)
+  expect_equal(unique(diag(A)), 0)
+  expect_equal(unique(diag(B)), 0)
+
+  # Symmetric if k=1
+  expect_true(isSymmetric(B))
+})
 
 # tridiag: Sparse tridiagonal matrix ------------------------------------------------------
 
@@ -119,32 +165,6 @@ test_that("Fiedler matrix has one dominant positive eigenvalue (rest negative) a
   expect_more_than(eigs[1], 0)
   expect_equal(sum(eigs[2:length(eigs)] > 0), 0)
   expect_identical(isSymmetric(A), TRUE)
-})
-
-# circul: Circulant matrix --------------------------------------------------------
-
-test_that("Circulant matrix is circular", {
-  # Check every diagonal in the matrix is of the same value
-  n <- 100
-  A <- circul(n)
-  B <- circul(rnorm(n))
-
-  i <- row(A)
-  j <- col(A)
-
-  bound <- (2*n - 2) / 2
-  # Check that matrix is Toeplitz (diagonals all equal)
-  for (k in -bound:bound){
-    # Check that matrix is Toeplitz (diagonals all equal)
-    expect_equal(length(unique(A[i == (j + k)])), 1)
-    expect_equal(length(unique(B[i == (j + k)])), 1)
-
-    # Check that matrix is circulant: ith diagonal equal to (i+n)th diagonal
-    if(k < 0){
-      expect_equal(unique(Diag(A, k = k)), unique(Diag(A, k = k + n)))
-      expect_equal(unique(Diag(B, k = k)), unique(Diag(B, k = k + n)))
-    }
-  }
 })
 
 # lehmer: Lehmer matrix -----------------------------------------------------------
