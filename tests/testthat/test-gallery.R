@@ -2,7 +2,7 @@ context("Gallery matrices")
 
 library(pracma)
 
-# Binomial matrix ---------------------------------------------------------
+# binomial_matrix: Binomial matrix ---------------------------------------------------------
 
 test_that("Binomial matrix", {
   for(n in 2:30){
@@ -13,11 +13,32 @@ test_that("Binomial matrix", {
     B <- A*2^((1-n)/2)
     expect_equal(norm(B %*% B - diag(n)), 0)
   }
+  # Test for n = 4
+  A <- binomial_matrix(4)
+  B <- matrix(c(1,1,1,1,3,1,-1,-3,3,-1,-1,3,1,-1,1,-1), nrow=4)
+  expect_equal(norm(A-B),0)
 })
 
-# Chebspec matrix ---------------------------------------------------------
+# cauchy_matrix: Cauchy matrix --------------------------------------------
 
-test_that("Chebspec matrix", {
+test_that("Cauchy matrix is cauchy", {
+  set.seed(1)
+  x <- rnorm(10)
+  y <- rnorm(10)
+
+  A <- cauchy_matrix(x, y)
+
+  # Check identity of each matrix cell is correct
+  for(i in 1:nrow(A)){
+    for(j in 1:ncol(A)){
+      expect_equal(A[i,j], 1 / (x[i] + y[j]))
+    }
+  }
+})
+
+# chebspec: Chebyshev spectral differentiation matrix ---------------------------------------------------------
+
+test_that("Chebspec matrix is nilpotent", {
   C <- chebspec(4)
   # C is nilpotent, k=0
   expect_equal(norm(C %*% C %*% C %*% C), 0)
@@ -30,13 +51,17 @@ test_that("Chebspec matrix", {
   # and the null vector is all ones
   expect_equal(norm(C %*% c(1,1,1,1)), 0)
 
-  # Eigenvalues have all real parts when k=1
+  # Eigenvalues have all negative real parts when k=1
   C <- chebspec(4, 1)
   eigs <- eigen(C)$values
   expect_true(all(Re(eigs) < 0))
 })
 
-# Tridiagonal matrix ------------------------------------------------------
+# chebvand: Vandermonde-like matrix for Chebyshev polynomials ----------------------------------------------------------------
+
+# test_that()
+
+# tridiag: Sparse tridiagonal matrix ------------------------------------------------------
 
 test_that("Tridiagonal matrix eigenvalues", {
   # Are tridiagonal matrix eigenvalues satisfied by identity
@@ -66,7 +91,7 @@ test_that("Tridiagonal matrix is tridiagonal", {
   expect_equal(norm(A), 0, tolerance = 0.00001)
 })
 
-# Fiedler matrix ----------------------------------------------------------
+# fiedler: Fiedler Symmetric matrix ----------------------------------------------------------
 
 test_that("Fiedler matrix has one dominant positive eigenvalue (rest negative) and symmetric", {
   A <- fiedler(10)
@@ -83,7 +108,7 @@ test_that("Fiedler matrix has one dominant positive eigenvalue (rest negative) a
   expect_identical(isSymmetric(A), TRUE)
 })
 
-# Circulant matrix --------------------------------------------------------
+# circul: Circulant matrix --------------------------------------------------------
 
 test_that("Circulant matrix is circular", {
   # Check every diagonal in the matrix is of the same value
@@ -109,7 +134,7 @@ test_that("Circulant matrix is circular", {
   }
 })
 
-# Lehmer matrix -----------------------------------------------------------
+# lehmer: Lehmer matrix -----------------------------------------------------------
 
 test_that("Lehmer matrix is correct", {
   A2 <- matrix(c(1, 1/2, 1/2, 1), nrow = 2)
