@@ -15,5 +15,7 @@ in the new dataset, and `n` is the number of simulations requested.
 ## MATLAB gallery of test matrices
 Bringing the [MATLAB gallery of test matrices](https://www.mathworks.com/help/matlab/ref/gallery.html) into R. For testing numerical methods. 
 
-## SGE cluster tools 
-Tools for easier profiling, monitoring, and manipulating of SGE cluster jobs from R.
+## Numeric tools
+`derivativeTest` - method to test derivatives based on Taylor's Theorem
+`plotPseudospectra` - plots pseudospectrum of a given matrix `A`
+

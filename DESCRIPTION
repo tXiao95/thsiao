@@ -13,7 +13,10 @@ Imports:
     Matrix,
     MASS,
     assertthat (>= 0.2.1),
-    pracma (>= 2.2.5)
+    pracma (>= 2.2.5),
+    data.table (>= 1.12.2),
+    directlabels (>= 2018.05.22),
+    ggplot2 (>= 3.2.1)
 Suggests: 
     testthat (>= 2.1.0),
     knitr,

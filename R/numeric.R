@@ -1,5 +1,10 @@
 #' @importFrom assertthat is.scalar
-#'
+#' @importFrom data.table data.table CJ
+#' @importFrom directlabels geom_dl
+#' @import ggplot2
+
+# linScale: linear scaling of a vector ------------------------------------
+
 #' @name linScale
 #' @title Linear scaling of numeric vectors
 #'
@@ -24,6 +29,9 @@ linScale <- function(x, newmin = 0, newmax = 1){
   oldmax <- max(x)
   return((x - oldmin)/(oldmax - oldmin) * (newmax - newmin) + newmin)
 }
+
+
+# derivativeTest: Taylor's Theorem based derivative test ------------------
 
 #' @name derivativeTest
 #' @title Testing derivatives based on the Taylor Theorem
@@ -66,6 +74,77 @@ derivativeTest <- function(f, f_grad, h, W, D, ...){
   return(list(d1=abs(d1), d2=abs(d2)))
 }
 
+# plotPseudospectra: plot pseudospectrum for a matrix ---------------------
 
+#' @name plotPseudospectra
+#' @title Visualize pseudospectra of a matrix
+#'
+#' @description Plots contour plot on the complex plane for the
+#' pseudospectra for the matrix A, under the given epsilon.
+#'
+#' @param A a square matrix
+#' @param title title of the pseudospectra plot
+#' @param eps epsilon values
+#'
+#' @return a ggplot object
+#'
+#' @export
+plotPseudospectra <- function(A, title = "e-pseudospectrum", eps = c(1,.5,.1, .01, .001)){
+  if(nrow(A) != ncol(A)){stop("A must be a square matrix")}
+
+  n <- nrow(A)
+
+  true_eigs <- eigen(A)$values
+  eig_table <- data.table(a = Re(true_eigs), b = Im(true_eigs))
+
+  min_Re <- min(eig_table$a)
+  min_Im <- min(eig_table$b)
+  max_Re <- max(eig_table$a)
+  max_Im <- max(eig_table$b)
+
+  # Try to narrow down where the contours are...ideally you would fix 'a' and the
+  # minimum singular value at epsilon, and solve for the complex part 'b' but
+  # I didn't know how to do that. So just finding all the computed minimum singular values
+  # that are below some tolerance distance from the contour I want. Then let the contour
+  #software handle the rest
+
+  # Creating grid of scalars on the complex plane. Then calculate minimum singular value for
+  # all matrices zI - A, where z \in C. data.table doesn't support complex numbers so need to make vector
+  # outside of the data frame
+  grid <- CJ(a = seq(min_Re - 5, max_Re + 5,.1),
+             b = seq(min_Im - 5, max_Im + 5,.1))
+  c    <-  complex(real = grid$a, imaginary =grid$b)
+  # Method 1: calculate all singular values and take minimum
+  grid[,sigma := sapply(c, function(c) min(svd(diag(c, n) - A)$d))]
+
+  # Want to know if there's a way to use svds() or similar to calculate smallest singular values?
+  # I don't want to calculate the inverse first...should experiment
+
+  # Method 2: run svds to get 1st singular value and take reciprocal
+  # grid[, sigma := sapply(c, function(c){
+  #   B <- diag(c,n) - A
+  #   X <- t(B) %*% B
+  #   eigs_sym(X,k=1)$values
+  #   #1 / eigs(Conj(t(B)) %*% B,k=1,sigma=0)$values
+  # })]
+
+  p <- ggplot(grid, aes(a, b)) +
+    geom_point(data = eig_table, aes(a,b),col = "red",size=4,alpha = 0.5) +
+    geom_contour(aes(z = sigma, colour = stat(level)),
+                 size = 1.5,
+                 breaks = c(eps)) +
+    theme_dark() +
+    scale_colour_distiller(palette = "Spectral", direction = 1) +
+    xlab("Real") +
+    ylab("Imaginary") +
+    ggtitle(title) +
+    labs(colour = "epsilon") +
+    geom_dl(aes(label=..level.., z = sigma), method = "top.pieces",
+            stat="contour",breaks = eps) +
+    geom_hline(yintercept = 0) +
+    geom_vline(xintercept = 0) +
+    coord_fixed()
+  p
+}
 
 
