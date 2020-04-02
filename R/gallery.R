@@ -204,9 +204,19 @@ circul <- function(v){
   return(A)
 }
 
-
 # clement: Tridiagonal matrix with zero diagonal entries ------------------
 
+#' @name clement
+#' @title Create Clement tridiagonal matrix with zero diagonal entries
+#'
+#' @description Returns an \code{n}-by-\code{n} tridiagonal matrix with zeros on the
+#'   main diagonal. For \code{k=0}, \code{A} is nonsymmetric. For \code{k=1, A} is
+#'   symmetric
+#'
+#' @param n order of matrix
+#' @param k 0 indicates symmetric matrix, 1 asymmetric
+#'
+#' @export
 clement <- function(n, k = 0){
   n <- n - 1
   z <- 1:n
@@ -224,13 +234,37 @@ clement <- function(n, k = 0){
 
 # compar: Comparison matrices ---------------------------------------------
 
-compar <- function(A, k = 0){
-  m <- nrow(A)
-  n <- ncol(A)
+#' @name compar
+#' @title Create comparison matrix \code{A}
+#'
+#' @description For \code{k=0}, if \code{i==j}, $A[i,j]=abs(B[i,j])$ and
+#'   \code{A[i,j]=-abs(B[i,j])} otherwise. For \code{k=1}, \code{A} replaces each
+#'   diagonal element of \code{B} with its absolute value, and replaces each
+#'   off-diagonal with the negative of the largest absolute value off-diagonal
+#'   in the same row.
+#'
+#' @param B input matrix
+#' @param k decides what matrix to return
+#'
+#' @export
+compar <- function(B, k = 0){
+  m <- nrow(B)
+  n <- ncol(B)
 
+  d <- abs(diag(B))
   if(k == 0){
-    C <- -abs(A)
+    A <- -abs(B)
+  } else if(k == 1){
+    diag(B) <- 0
+    for(i in 1:nrow(A)){
+      row <- A[i,]
+      val <- -max(abs(row))
+      A[i,] <- val
+    }
   }
+  diag(A) <- d
+
+  return(A)
 }
 
 # spdiags: Sparse Diagonal Matrix --------------------------------------------------
