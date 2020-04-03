@@ -16,6 +16,6 @@ in the new dataset, and `n` is the number of simulations requested.
 Bringing the [MATLAB gallery of test matrices](https://www.mathworks.com/help/matlab/ref/gallery.html) into R. For testing numerical methods. 
 
 ## Numeric tools
-`derivativeTest` - method to test derivatives based on Taylor's Theorem
-`plotPseudospectra` - plots pseudospectrum of a given matrix `A`
+* `derivativeTest` - method to test derivatives based on Taylor's Theorem
+* `plotPseudospectra` - plots pseudospectrum of a given matrix `A`
 
