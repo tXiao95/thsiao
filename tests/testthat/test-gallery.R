@@ -5,7 +5,7 @@ library(pracma)
 # binomial_matrix: Binomial matrix ---------------------------------------------------------
 
 test_that("Binomial matrix", {
-  for(n in 2:30){
+  for(n in 10:13){
     A <- binomial_matrix(n)
     expect_equal(norm(A %*% A - 2^(n-1) * diag(n)), 0)
 
@@ -136,6 +136,35 @@ test_that("Dorr matrix is correct", {
                     0, 15, -31), nrow=3, byrow=T)
   Btest <- as.matrix(dorr(3, -1))
   expect_equal(norm(Btest - Btrue), 0)
+})
+
+# dramadah: Anti-hadamard matrix ------------------------------------------
+
+test_that("Dramadah matrix is correct", {
+  A1 <- dramadah(4, 1)
+  A2 <- dramadah(4, 2)
+  A3 <- dramadah(4, 3)
+
+  refA1 <- matrix(c(1,0,0,1,1,1,0,0,0,1,1,0,1,0,1,1), nrow=4)
+  refA2 <- matrix(c(1,0,0,0,1,1,0,0,0,1,1,0,1,0,1,1), nrow=4)
+  refA3 <- matrix(c(1,0,1,0,1,1,0,1,0,1,1,0,0,0,1,1), nrow=4)
+  expect_equal(norm(A1 - refA1), 0)
+  expect_equal(norm(A2 - refA2), 0)
+  expect_equal(norm(A3 - refA3), 0)
+})
+
+# jordbloc ----------------------------------------------------------------
+
+test_that("Jordan block is correct", {
+  A1 <- jordbloc(4)
+  A2 <- jordbloc(4, 2)
+
+  refA1 <- matrix(c(1,0,0,0,1,1,0,0,0,1,1,0,0,0,1,1), nrow=4)
+  refA2 <- refA1
+  diag(refA2) <- 2
+
+  expect_equal(norm(A1 - refA1), 0)
+  expect_equal(norm(A2 - refA2), 0)
 })
 
 # tridiag: Sparse tridiagonal matrix ------------------------------------------------------
