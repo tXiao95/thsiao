@@ -12,9 +12,6 @@ on new data not originally used to fit the model object. For example, for a `lm`
 defined by the coefficients of the model, and apply those samples to the new data, returning a `m x n` matrix, where `m` is the number of rows 
 in the new dataset, and `n` is the number of simulations requested.
 
-## MATLAB gallery of test matrices
-Bringing the [MATLAB gallery of test matrices](https://www.mathworks.com/help/matlab/ref/gallery.html) into R. For testing numerical methods. 
-
 ## Numeric tools
 * `derivativeTest` - method to test derivatives based on Taylor's Theorem
 * `plotPseudospectra` - plots pseudospectrum of a given matrix `A`
